@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  iot-gateway:
+    build: ./iot-gateway/app
+    container_name: iot-gateway
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mosquitto
+    networks:
+      - iot-network  # 🔹 Asignar la red aquí
+
+  mosquitto:
+    image: eclipse-mosquitto
+    container_name: mosquitto
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./iot-gateway/mosquitto/config:/mosquitto/config
+      - ./iot-gateway/mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./iot-gateway/mosquitto/config/mosquitto.password.txt:/mosquitto/config/mosquitto.passwd
+      - ./iot-gateway/mosquitto/config/mosquitto.acl:/mosquitto/config/mosquitto.acl
+    networks:
+      - iot-network  # 🔹 Asignar la red aquí
+
+networks:
+  iot-network:
+    name: iot-network
+    driver: bridge
