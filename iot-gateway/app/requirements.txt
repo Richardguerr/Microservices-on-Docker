@@ -1,3 +1,5 @@
 fastapi
-uvicorn
+uvicorn[standard]
 paho-mqtt
+websockets  # Para manejar WebSockets en FastAPI
+asyncio  # Para tareas asíncronas
