@@ -47,7 +47,7 @@ services:
       - ./iot-gateway/mosquitto/config:/mosquitto/config
     networks:
       - iot-network
-    retart: always
+    restart: always
 
 networks:
   iot-network:
