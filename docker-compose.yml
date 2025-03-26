@@ -1,9 +1,9 @@
 version: '3.8'
 
 services:
-  iot-gateway:
-    build: ./iot-gateway
-    container_name: iot-gateway
+  broker_mqtt_simulator:
+    build: ./broker_mqtt_simulator
+    container_name: broker_mqtt_simulator
     ports:
       - "8000:8000"
     depends_on:
@@ -11,21 +11,21 @@ services:
     networks:
       - iot-network
 
-  sensor_service:
-    build: ./sensor_service
-    container_name: sensor_service
+  iot_devices_microservice:
+    build: ./iot_devices_microservice
+    container_name: iot_devices_microservice
     ports:
       - "8001:8001"
     networks:
       - iot-network
     depends_on:
-      - postgres_sensor_db
+      - postgres_iot_devices_db
     environment:
       DATABASE_URL: ${DATABASE_URL}  # Usando la variable de entorno definida en .env
 
-  postgres_sensor_db:
+  postgres_iot_devices_db:
     image: postgres:13
-    container_name: postgres_sensor_db
+    container_name: postgres_iot_devices_db
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}  # Usando la variable de entorno definida en .env
@@ -36,15 +36,15 @@ services:
     networks:
       - iot-network
     volumes:
-      - sensor_db_data:/var/lib/postgresql/data
+      - iot_devices_db_data:/var/lib/postgresql/data
 
-  mosquitto:
+  broker_mosquitto:
     image: eclipse-mosquitto
-    container_name: mosquitto
+    container_name: broker_mosquitto
     ports:
       - "1883:1883"
     volumes:
-      - ./iot-gateway/mosquitto/config:/mosquitto/config
+      - ./broker_mqtt_simulator/mosquitto/config:/mosquitto/config
     networks:
       - iot-network
     restart: always
@@ -54,4 +54,4 @@ networks:
     driver: bridge
 
 volumes:
-  sensor_db_data:
+  iot_devices_db_data:

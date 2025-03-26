@@ -54,7 +54,7 @@ app.add_middleware(
 @app.get("/")
 def read_root():
     """Ruta raíz para verificar que el servicio está en ejecución."""
-    return {"message": "IoT Gateway is running"}
+    return {"message": "Broker MQTT Simulator is running"}
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
