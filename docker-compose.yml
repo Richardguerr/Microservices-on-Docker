@@ -37,6 +37,8 @@ services:
       - iot-network
     volumes:
       - iot_devices_db_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # Script de inicialización
+
 
   broker_mosquitto:
     image: eclipse-mosquitto
