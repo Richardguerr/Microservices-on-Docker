@@ -7,8 +7,8 @@ app = FastAPI()
 # Crear las tablas
 Base.metadata.create_all(bind=engine)
 
-app.include_router(router, prefix="/sensor_service")
+app.include_router(router, prefix="/iot_devices")
 
 @app.get("/")
 def read_root():
-    return {"message": "Sensor Service is running"}
+    return {"message": "IoT Devices Service is running"}
