@@ -1,8 +1,8 @@
 from pydantic import BaseModel, UUID4
-from typing import List, Optional
+from typing import Optional
 
 class SensorCreate(BaseModel):
-    id_nodo: UUID4
+    id_node: str
     variable: str
     marca: str
     referencia: str
@@ -23,8 +23,8 @@ class SensorCreate(BaseModel):
     durabilidad_valor: Optional[int]
     durabilidad_unidad: Optional[str]
     modo_instalacion: Optional[str]
-    tipo_salida: Optional[List[str]]
-    certificados: Optional[List[str]]
+    tipo_salida: Optional[str]
+    certificados: Optional[str]
 
 class SensorResponse(SensorCreate):
     id: UUID4

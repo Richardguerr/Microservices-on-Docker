@@ -22,7 +22,7 @@ class Sensor(Base):
     __tablename__ = "sensores"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    id_nodo = Column(String, ForeignKey("nodos_sensores.id"), nullable=True)
+    id_node = Column(String, ForeignKey("nodos_sensores.id"), nullable=True)
     variable = Column(String, nullable=False)
     marca = Column(String, nullable=False)
     referencia = Column(String, nullable=False)
@@ -43,6 +43,6 @@ class Sensor(Base):
     durabilidad_valor = Column(Integer)
     durabilidad_unidad = Column(String)
     modo_instalacion = Column(String)
-    tipo_salida = Column(ARRAY(String))
-    certificados = Column(ARRAY(String))
+    tipo_salida = Column(String)
+    certificados = Column(String)
 
