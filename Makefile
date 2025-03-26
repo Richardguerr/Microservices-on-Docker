@@ -5,7 +5,7 @@ build-docker:
 
 run-docker: stop-docker build-docker
 	@echo "Starting Docker containers for development..."
-	@docker compose docker-compose.yml up -d
+	@docker compose up -d
 	
 stop-docker-volumes:
 	@echo "Stopping Docker containers and removing volumes..."
