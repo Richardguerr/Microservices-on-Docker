@@ -15,7 +15,7 @@ stop-docker:
 	@echo "Stopping all Docker containers..."
 	@docker compose down
 
-reset-db: stop-docker-volumes run-docker
-	@echo "Database has been reset!"
+reset-docker: stop-docker-volumes run-docker
+	@echo "Docker Comopose has been reset!"
 
-.PHONY: build-docker run-docker stop-docker-volumes stop-docker reset-db
+.PHONY: build-docker run-docker stop-docker-volumes stop-docker reset-docker
