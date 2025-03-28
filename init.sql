@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS nodos_sensores(
    id             VARCHAR(7) NOT NULL PRIMARY KEY
   ,brand          VARCHAR(10) NOT NULL
   ,description    VARCHAR(44) NOT NULL
+  ,associated_mine UUID
   ,zone_name      VARCHAR(7) NOT NULL
   ,zone_category  VARCHAR(10) NOT NULL
   ,id_iot_gateway VARCHAR(30)
