@@ -1,26 +1,8 @@
-from sqlalchemy import Column, String, Float, Integer, ForeignKey, ARRAY
+from sqlalchemy import Column, String, Float, Integer, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
-from database import Base
+from db.session import Base
 
-class IoTGateway(Base):
-    __tablename__ = "iot_gateways"
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    brand = Column(String, nullable=False)
-    description = Column(String, nullable=False)
-   
-class SensorNode(Base):
-    __tablename__ = "nodos_sensores"
-
-    id = Column(String, primary_key=True)
-    brand = Column(String, nullable=False)
-    description = Column(String, nullable=False)
-    associated_mine = Column(UUID(as_uuid=True), nullable=True)
-    zone_category = Column(String, nullable=True)
-    zone_name = Column(String, nullable=True)
-    id_iot_gateway = Column(UUID(as_uuid=True), ForeignKey("iot_gateways.id"), nullable=True)
-    
 class Sensor(Base):
     __tablename__ = "sensores"
 
@@ -48,4 +30,3 @@ class Sensor(Base):
     modo_instalacion = Column(String)
     tipo_salida = Column(String)
     certificados = Column(String)
-

@@ -1,14 +1,29 @@
 from fastapi import FastAPI
-from database import Base, engine
-from routes import router
+from fastapi.middleware.cors import CORSMiddleware
+from core.config import Config
+from api.v1.router import api_router
+from db.session import engine, Base
 
-app = FastAPI()
+if Config.ENVIRONMENT in ["development", "test"]:
+    Base.metadata.create_all(bind=engine)
 
-# Crear las tablas
-Base.metadata.create_all(bind=engine)
+app = FastAPI(
+    title="IoT Devices API",
+    description="API para gestionar dispositivos IoT en una mina subterránea",
+    version="1.0.0",
+    debug=Config.DEBUG
+)
 
-app.include_router(router, prefix="/iot_devices")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=Config.ALLOWED_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(api_router)
 
 @app.get("/")
 def read_root():
-    return {"message": "IoT Devices Service is running"}
+    return {"message": f"IoT Devices API is running in {Config.ENVIRONMENT} mode!"}
