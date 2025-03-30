@@ -1,13 +1,15 @@
-from sqlalchemy import Column, String, Float, Integer, ForeignKey
+from sqlalchemy import Column, String, Float, Integer, ForeignKey, text
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
+
 import uuid
-from db.session import Base
+from app.db.session import Base
 
 class Sensor(Base):
     __tablename__ = "sensores"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    id_node = Column(String, ForeignKey("nodos_sensores.id"), nullable=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))   
+    id_node = Column(String, ForeignKey("nodos_sensores.id", ondelete="CASCADE"), nullable=True)
     variable = Column(String, nullable=False)
     marca = Column(String, nullable=False)
     referencia = Column(String, nullable=False)
@@ -30,3 +32,5 @@ class Sensor(Base):
     modo_instalacion = Column(String)
     tipo_salida = Column(String)
     certificados = Column(String)
+
+    sensor_node = relationship("SensorNode", back_populates="sensors", passive_deletes=True)

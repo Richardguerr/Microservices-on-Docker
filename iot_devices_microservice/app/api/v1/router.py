@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from api.v1.endpoints import sensors, sensor_nodes, iot_gateways
+from app.api.v1.endpoints import sensors, sensor_nodes, iot_gateways
 
 api_router = APIRouter()
 
