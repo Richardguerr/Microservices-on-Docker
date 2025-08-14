@@ -1,0 +1,68 @@
+
+services:
+  broker_mqtt_simulator:
+    build: ./broker_mqtt_simulator
+    container_name: broker_mqtt_simulator
+    ports:
+      - "8000:8000"
+    depends_on:
+      - broker_mosquitto
+    networks:
+      - iot-network
+
+  iot_devices_microservice:
+    build: ./iot_devices_microservice
+    container_name: iot_devices_microservice
+    ports:
+      - "8001:8001"
+    networks:
+      - iot-network
+    depends_on:
+      postgres_iot_devices_db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+   
+    volumes:
+      - ./iot_devices_microservice/alembic:/app/alembic
+
+  postgres_iot_devices_db:
+    image: postgres:13
+    container_name: postgres_iot_devices_db
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}  # Usando la variable de entorno definida en .env
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}  # Usando la variable de entorno definida en .env
+      POSTGRES_DB: ${POSTGRES_DB}  # Usando la variable de entorno definida en .env
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U iot_user -d iot_devices_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - iot-network
+    volumes:
+      - iot_devices_db_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # Script de inicialización
+
+
+  broker_mosquitto:
+    image: eclipse-mosquitto
+    container_name: broker_mosquitto
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./broker_mqtt_simulator/mosquitto/config:/mosquitto/config
+    networks:
+      - iot-network
+    restart: always
+
+networks:
+  iot-network:
+    driver: bridge
+
+volumes:
+  iot_devices_db_data:
+  iot_alembic_migrations:  # Volumen para migraciones (opcional)
