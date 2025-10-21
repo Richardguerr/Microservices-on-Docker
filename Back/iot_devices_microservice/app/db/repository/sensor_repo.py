@@ -1,5 +1,4 @@
 from sqlalchemy.orm import Session
-from uuid import UUID
 from app.db.models.sensor import Sensor
 from app.db.schemas.sensor import SensorCreate, SensorUpdate
 from sqlalchemy import select, func
@@ -11,7 +10,7 @@ def get_sensors(db: Session):
     """Obtiene todos los sensores con paginación"""
     return db.query(Sensor).options(joinedload(Sensor.sensor_node)).all()
 
-def get_sensor(db: Session, sensor_id: UUID):
+def get_sensor(db: Session, sensor_id: int):
     """Obtiene un sensor específico por su ID"""
     return db.query(Sensor).filter(Sensor.id == sensor_id).first()
 
@@ -23,7 +22,7 @@ def create_sensor(db: Session, sensor: SensorCreate):
     db.refresh(db_sensor)
     return db_sensor
 
-def update_sensor(db: Session, sensor_id: UUID, sensor: SensorUpdate):
+def update_sensor(db: Session, sensor_id: int, sensor: SensorUpdate):
     """Actualiza un sensor existente"""
     db_sensor = get_sensor(db, sensor_id)
     if not db_sensor:
@@ -37,7 +36,7 @@ def update_sensor(db: Session, sensor_id: UUID, sensor: SensorUpdate):
     db.refresh(db_sensor)
     return db_sensor
 
-def delete_sensor(db: Session, sensor_id: UUID):
+def delete_sensor(db: Session, sensor_id: int):
     """Elimina un sensor"""
     db_sensor = get_sensor(db, sensor_id)
     if not db_sensor:

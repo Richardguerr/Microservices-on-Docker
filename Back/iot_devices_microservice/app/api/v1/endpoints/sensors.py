@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, Query,HTTPException
 from sqlalchemy.orm import Session
-from uuid import UUID
 from typing import List
 from app.services.sensor import SensorService
 from app.db.schemas.sensor import SensorCreate, SensorResponse, SensorUpdate,PaginatedSensorResponse
@@ -21,7 +20,7 @@ def list_sensors(
     return SensorService.list_sensors(db)
 
 @router.get("/{sensor_id}", response_model=SensorResponse)
-def get_sensor(sensor_id: UUID, db: Session = Depends(get_db)):
+def get_sensor(sensor_id: int, db: Session = Depends(get_db)):
     """Obtiene un sensor específico por su ID."""
     sensor = SensorService.get_sensor(sensor_id, db)
     if not sensor:
@@ -30,7 +29,7 @@ def get_sensor(sensor_id: UUID, db: Session = Depends(get_db)):
 
 @router.put("/{sensor_id}", response_model=SensorResponse)
 def update_sensor(
-    sensor_id: UUID, 
+    sensor_id: int, 
     sensor: SensorUpdate, 
     db: Session = Depends(get_db)
 ):
@@ -41,7 +40,7 @@ def update_sensor(
     return updated_sensor
 
 @router.delete("/{sensor_id}", response_model=SensorResponse)
-def delete_sensor(sensor_id: UUID, db: Session = Depends(get_db)):
+def delete_sensor(sensor_id: int, db: Session = Depends(get_db)):
     """Elimina un sensor."""
     deleted_sensor = SensorService.delete_sensor(sensor_id, db)
     if not deleted_sensor:

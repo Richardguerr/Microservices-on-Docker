@@ -1,5 +1,4 @@
 from sqlalchemy.orm import Session
-from uuid import UUID
 from app.db.repository.sensor_repo import (
     create_sensor, 
     get_sensors, 
@@ -24,13 +23,13 @@ class SensorService:
         return get_sensors(db)
 
     @staticmethod
-    def get_sensor(sensor_id: UUID, db: Session) -> SensorResponse:
+    def get_sensor(sensor_id: int, db: Session) -> SensorResponse:
         """Obtiene un sensor específico por su ID."""
         return get_sensor(db, sensor_id)
 
     @staticmethod
     def update_sensor(
-        sensor_id: UUID, 
+        sensor_id: int, 
         sensor_data: SensorUpdate, 
         db: Session
     ) -> SensorResponse:
@@ -38,7 +37,7 @@ class SensorService:
         return update_sensor(db, sensor_id, sensor_data)
 
     @staticmethod
-    def delete_sensor(sensor_id: UUID, db: Session) -> SensorResponse:
+    def delete_sensor(sensor_id: int, db: Session) -> SensorResponse:
         """Elimina un sensor."""
         return delete_sensor(db, sensor_id)
 

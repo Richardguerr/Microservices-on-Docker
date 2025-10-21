@@ -126,11 +126,7 @@ class SensorCreate(SensorBase):
         None, 
         description="Modo de instalación recomendado"
     )
-    tipo_salida: Optional[str] = Field(
-        None, 
-        description="Tipo de salida (ej. 'Digital, Analógica')",
-        pattern="^[a-zA-Z0-9, áéíóúÁÉÍÓÚñÑ]+$"
-    )
+
     certificados: Optional[str] = Field(
         None, 
         description="Certificaciones (ej. 'CE, ISO 14001')",
@@ -145,7 +141,7 @@ class SensorResponse(SensorBase):
    
     
     # Todos los campos opcionales
-    id: Optional[uuid.UUID] = None
+    id: int = None
     id_node: Optional[str] = None
     unidad_medicion: Optional[str] = None
     max_medicion: Optional[float] = None
@@ -169,14 +165,13 @@ class SensorResponse(SensorBase):
 
     class Config:
         json_encoders = {
-            uuid.UUID: str,
             datetime: lambda dt: dt.isoformat()
         }
         from_attributes = True
 
 class SensorUpdate(BaseModel):
     """Esquema para actualización parcial"""
-    id: Optional[uuid.UUID] = None
+    id: int = None
     variable: Optional[VariableTipo] = None
     marca: Optional[str] = None
     referencia: Optional[str] = None
@@ -201,10 +196,7 @@ class SensorUpdate(BaseModel):
     tipo_salida: Optional[str] = None
     certificados: Optional[str] = None
 
-    class Config:
-        json_encoders = {
-            uuid.UUID: str
-        }
+  
 class PaginatedSensorResponse(BaseModel):
     total: int
     page: int

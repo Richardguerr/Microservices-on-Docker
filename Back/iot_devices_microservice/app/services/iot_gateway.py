@@ -1,12 +1,12 @@
 # services.py
 from sqlalchemy.orm import Session
-import uuid
 from typing import Optional, List
 from app.db.models.iot_gateway import IoTGateway
 from app.db.repository.iot_gateway_repo import (
     create_iot_gateway,
     get_iot_gateway_by_id,
     get_iot_gateways,
+    get_iot_gateways_ids,
     update_iot_gateway,
     delete_iot_gateway,
     get_iot_gateways_paginated
@@ -14,6 +14,7 @@ from app.db.repository.iot_gateway_repo import (
 from app.db.schemas.iot_gateway import (
     IoTGatewayCreate,
     IoTGatewayResponse,
+    IoTGatewaySIdResponse,
     IoTGatewayUpdate,
     PaginatedResponse
 )
@@ -26,7 +27,7 @@ class IoTGatewayService:
         return create_iot_gateway(db=db, gateway_data=gateway_data)
 
     @staticmethod
-    def get_iot_gateway(gateway_id: uuid.UUID, db: Session) -> IoTGatewayResponse:
+    def get_iot_gateway(gateway_id: int, db: Session) -> IoTGatewayResponse:
         """Obtiene un IoT Gateway por su ID con todos sus nodos sensores y sensores."""
         gateway = get_iot_gateway_by_id(db=db, gateway_id=gateway_id)
         if not gateway:
@@ -42,6 +43,11 @@ class IoTGatewayService:
         return get_iot_gateways(db=db)
 
     @staticmethod
+    def list_iot_gateways_ids(db: Session) -> list[IoTGatewaySIdResponse]:
+        """Obtiene todos los nodos sensores registrados."""
+        return get_iot_gateways_ids(db)
+
+    @staticmethod
     def list_iot_gateways_paginated(
         db: Session, 
         page: int = 1, 
@@ -52,7 +58,7 @@ class IoTGatewayService:
 
     @staticmethod
     def update_iot_gateway(
-        gateway_id: uuid.UUID,
+        gateway_id: int,
         gateway_data: IoTGatewayUpdate,
         db: Session
     ) -> IoTGatewayResponse:
@@ -66,7 +72,7 @@ class IoTGatewayService:
         return update_iot_gateway(db=db, gateway=gateway, gateway_data=gateway_data)
 
     @staticmethod
-    def delete_iot_gateway(gateway_id: uuid.UUID, db: Session) -> None:
+    def delete_iot_gateway(gateway_id: int, db: Session) -> None:
         """Elimina un IoT Gateway existente."""
         gateway = get_iot_gateway_by_id(db=db, gateway_id=gateway_id)
         if not gateway:

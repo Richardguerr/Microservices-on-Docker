@@ -3,6 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import Config
 from app.api.v1.router import api_router
 from app.db.session import engine, Base
+from app.db.models.mine_zone import MineZone
+from app.db.models.iot_gateway import IoTGateway  
+from app.db.models.sensor_node import SensorNode
+from app.db.models.sensor import Sensor
 
 if Config.ENVIRONMENT in ["development", "test"]:
     Base.metadata.create_all(bind=engine)

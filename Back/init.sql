@@ -1,16 +1,32 @@
 -- Script para crear las tablas de la base de datos IoT
 -- Ejecutar ANTES de los INSERT statements
 
+CREATE TABLE IF NOT EXISTS mine_zones (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(100) NOT NULL UNIQUE,
+    description TEXT,
+    location VARCHAR(200),
+    zone_type VARCHAR(50) NOT NULL,
+    status VARCHAR(20) DEFAULT 'active',
+    mine_type VARCHAR(50),
+    coordinates VARCHAR(100),
+    depth VARCHAR(50),
+    area VARCHAR(50),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ
+);
+
 -- 1. Crear tabla iot_gateways
-CREATE TABLE iot_gateways (
+CREATE TABLE IF NOT EXISTS iot_gateways (
     id SERIAL PRIMARY KEY,
+    mine_zone_id UUID REFERENCES mine_zones(id) ON DELETE SET NULL,
     brand VARCHAR(100) NOT NULL,
     description TEXT,
     associated_mine VARCHAR(100)
 );
 
 -- 2. Crear tabla nodos_sensores
-CREATE TABLE nodos_sensores (
+CREATE TABLE IF NOT EXISTS nodos_sensores (
     id VARCHAR(50) PRIMARY KEY,
     brand VARCHAR(100) NOT NULL,
     description TEXT,
@@ -20,7 +36,7 @@ CREATE TABLE nodos_sensores (
 );
 
 -- 3. Crear tabla sensores
-CREATE TABLE sensores (
+CREATE TABLE IF NOT EXISTS sensores (
     id SERIAL PRIMARY KEY,
     id_node VARCHAR(50) REFERENCES nodos_sensores(id),
     variable VARCHAR(50),
@@ -55,14 +71,20 @@ CREATE INDEX idx_nodos_zone_category ON nodos_sensores(zone_category);
 
 -- Verificar que las tablas se crearon correctamente
 \dt
--- 2. Insertar los IoT Gateways (sin especificar ID)
-INSERT INTO iot_gateways (brand, description, associated_mine) VALUES 
-('GatewayTech', 'Gateway principal para zona de túneles', NULL),
-('EdgeGateway', 'Gateway para zonas de extracción', NULL),
-('MineConnect', 'Gateway para bocaminas y áreas externas', NULL),
-('GatewayTech', 'Gateway secundario para túneles profundos', NULL),
-('EdgeGateway', 'Gateway de respaldo para zonas críticas', NULL);
+INSERT INTO mine_zones (name, description, location, zone_type, mine_type, coordinates, depth, area) VALUES 
+('Mina Principal Subterránea', 'Mina subterránea principal de extracción de cobre', 'Cordillera de los Andes', 'mine', 'underground', '-33.4489, -70.6693', '450m', '120 hectáreas'),
+('Zona de Túneles Norte', 'Red de túneles de acceso norte', 'Nivel -150', 'zone', NULL, '-33.4490, -70.6694', '150m', '5 hectáreas'),
+('Área de Procesamiento', 'Zona de procesamiento primario', 'Planta de tratamiento', 'area', NULL, '-33.4488, -70.6692', 'N/A', '2 hectáreas'),
+('Sector de Extracción A', 'Sector principal de extracción mineral', 'Nivel -200', 'sector', NULL, '-33.4491, -70.6695', '200m', '8 hectáreas')
+ON CONFLICT (name) DO NOTHING;
 
+-- 3. Insertar los IoT Gateways
+INSERT INTO iot_gateways (brand, description, associated_mine) VALUES 
+('GatewayTech', 'Gateway principal para zona de túneles', (SELECT id FROM mine_zones WHERE name = 'Zona de Túneles Norte')),
+('EdgeGateway', 'Gateway para zonas de extracción', (SELECT id FROM mine_zones WHERE name = 'Sector de Extracción A')),
+('MineConnect', 'Gateway para bocaminas y áreas externas', (SELECT id FROM mine_zones WHERE name = 'Mina Principal Subterránea')),
+('GatewayTech', 'Gateway secundario para túneles profundos', (SELECT id FROM mine_zones WHERE name = 'Zona de Túneles Norte')),
+('EdgeGateway', 'Gateway de respaldo para zonas críticas', (SELECT id FROM mine_zones WHERE name = 'Sector de Extracción A'));
 -- 3. Insertar nodos sensores ya asociados a los gateways
 -- Primero necesitamos conocer los IDs de los gateways recién creados
 -- Asumamos que se crearon en el mismo orden que los insertamos:

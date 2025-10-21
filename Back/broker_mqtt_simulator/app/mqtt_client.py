@@ -25,7 +25,6 @@ def on_connect(client, userdata, flags, rc, properties=None):
 def on_message(client, userdata, message):
     """ Maneja los mensajes recibidos desde MQTT. """
     data = message.payload.decode()
-    print(f"📥 MQTT Recibido: {data}")
     
     # Usar la referencia global al bucle principal
     if main_loop is not None:
@@ -37,7 +36,6 @@ async def process_messages():
     """ Enviar mensajes desde MQTT a WebSockets. """
     while True:
         data = await message_queue.get()
-        print(f"📤 Enviando a WebSockets: {data}")
 
         disconnected_clients = set()
         for ws in websocket_clients:
@@ -79,7 +77,6 @@ async def register_websocket(ws):
     try:
         while True:
             msg = await ws.receive_text()
-            print(f"📩 Mensaje recibido del WebSocket: {msg}")
     except Exception:
         pass  # 🔹 Evita imprimir errores de desconexión
     finally:
